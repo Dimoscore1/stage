@@ -1,0 +1,1 @@
+alter table bonlivraison add COLUMN dateexportCodex date default NULL;

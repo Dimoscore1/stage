@@ -1,0 +1,7 @@
+- ifref_etatcommandeparent
+	-> idref_etatcommandeparent
+- Les tables ref_typelignefactureclient et ref_typebl ne doivent pas être en auto_increment, sinon on ne peux pas insérer de valeur 0 avec les scripts d'initialisation.
+- il manque les contraintes d'unicité des codes en fonction de la société et / ou entreprise ... du coup on a aucune contraintes dans la base et tout repose sur le code java en amont ... ça ne pose pas vraiment de problème en soi mais interdira de faire des update direct en SQL sous peine de dysfonctionnement majeur ensuite.
+
+
+Dans table pointage : les colonnes idaffaire et idactivite ne doivent pas avoir de contrainte de NULLite.

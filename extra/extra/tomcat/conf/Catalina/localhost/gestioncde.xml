@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context docBase="/APP/bin/apache-tomcat-6.0.24/gestioncde.war">
+	<Parameter name="date.format" value="dd/MM/yyyy" />
+	<Parameter name="activite.fantome.code" value="FANTOME" />
+	<Parameter name="prefix.fantome.code" value="GC" />
+	<Parameter name="articlemanuel.famille.code" value="9" />
+	<Parameter name="webservice.activate.log" value="true" />
+	<Parameter name="eBusinessSuite.url" value="http://oaidf.vinci-energies.net:8009" />
+
+	<!-- Interceptor Hibernate -->
+	<Parameter name="hibernate.interceptor" value="com.vinci.iep.persistent.UserInterceptor" />
+	
+	<!--  Authentification -->
+	<Parameter name="authentication.class.name" value="com.vinci.iep.security.AuthenticationModuleVinci" />
+	<Parameter name="authorization.class.name" value="com.vinci.iep.security.AuthorizationModuleVinci" />
+
+	<!-- UserProfilTag Inteface Impl -->
+	<Parameter name="userprofiletag.interface.impl" value="com.vinci.iep.struts.taglib.UserProfileTagInterfaceImpl" />
+
+	<!-- Log4j -->
+	<!-- appender stdout -->
+	<Parameter name="log4j.appender.stdout" value="org.apache.log4j.ConsoleAppender" />
+	<Parameter name="log4j.appender.stdout.Target" value="System.out" />
+	<Parameter name="log4j.appender.stdout.layout" value="org.apache.log4j.PatternLayout" />
+	<Parameter name="log4j.appender.stdout.layout.ConversionPattern" value=" [%d{dd MMM yyyy HH:mm:ss} - GdC] %5p (%F:%L) - %m%n" />
+	<!-- appender fichier -->
+	<Parameter name="log4j.appender.applicationLogsFile" value="org.apache.log4j.RollingFileAppender" />
+	<Parameter name="log4j.appender.applicationLogsFile.MaxFileSize" value="1000KB" />
+	<Parameter name="log4j.appender.applicationLogsFile.MaxBackupIndex" value="10" />
+	<Parameter name="log4j.appender.applicationLogsFile.File" value="/APP/bin/apache-tomcat-6.0.24/logs/gdc.log" />
+	<Parameter name="log4j.appender.applicationLogsFile.layout" value="org.apache.log4j.PatternLayout" />
+	<Parameter name="log4j.appender.applicationLogsFile.layout.ConversionPattern" value="[%d{dd MMM yyyy HH:mm:ss} - GdC] %5p (%F:%L)%M() - %m%n" />
+	<Parameter name="log4j.appender.applicationLogsFile.append" value="true" />
+	<!-- Developpement specifique -->
+	<Parameter name="log4j.logger.com.vinci" value="info,applicationLogsFile" />
+	<Parameter name="log4j.additivity.com.vinci" value="false" />
+	<!-- Developpement generique -->
+	<Parameter name="log4j.logger.fr.smile" value="info,applicationLogsFile" />
+	<Parameter name="log4j.additivity.fr.smile" value="false" />
+	<!-- Requete SQL -->
+	<Parameter name="log4j.logger.org.hibernate.SQL" value="info,applicationLogsFile" />
+	<Parameter name="log4j.additivity.org.hibernate.SQL" value="false" />
+	<!-- Framework trop verbeux pour notre besoin -->
+	<Parameter name="log4j.logger.com.opensymphony.xwork2.ognl.OgnlValueStack" value="error,applicationLogsFile" />
+	<Parameter name="log4j.additivity.com.opensymphony.xwork2.ognl.OgnlValueStack" value="false" />
+	<!-- Par defaut -->
+	<Parameter name="log4j.rootLogger" value="warn,applicationLogsFile" />
+	<!-- DATASOURCE -->
+	<Resource name="jdbc/IEP" auth="Container" type="javax.sql.DataSource" maxActive="20" maxIdle="10" maxWait="10000" username="gestioncde" password="gestioncde" driverClassName="com.mysql.jdbc.Driver"
+		url="jdbc:mysql://localhost/gestioncommande" />
+	<Resource name="wm/MyWorkManager" 
+		auth="Container"
+		type="commonj.work.WorkManager"
+		factory="de.myfoo.commonj.work.FooWorkManagerFactory" 
+		maxThreads="5" />
+</Context>
