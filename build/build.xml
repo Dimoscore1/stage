@@ -1,0 +1,166 @@
+<project name="Webapp Precompilation" default="all" basedir="." xmlns:sonar="antlib:org.sonar.ant">
+
+	<fail message="-Djava.home non renseignee" unless="java.home"/>
+	<fail message="-Dtomcat.home non renseignee" unless="tomcat.home"/>
+    <echo message="ant.home = ${ant.home}"/>
+	<echo message="java.home = ${java.home}"/>
+	<echo message="tomcat.home = ${tomcat.home}"/>
+
+	<property name="project" value="gestioncde"/>
+	<property name="archive" value="${project}.war"/>
+	<property name="war.dir" value="./${project}"/>
+	<property name="war.classes" value="${war.dir}/WEB-INF/classes"/>
+	<property name="war.lib" value="${war.dir}/WEB-INF/lib"/>
+	<property name="version.file" value="${war.dir}/version.txt"/>
+
+	<property name="src.dir" value="../src"/>
+	<property name="src-generique.dir" value="../src-generique"/>
+	<property name="web.dir" value="../web"/>
+	<property name="ressources.dir" value="../extra/build"/>
+	<property name="ressources.tomcat" value="../extra/tomcat"/>
+	<property name="java.encoding" value="UTF-8"/>
+	
+	<property name="sonar.host.url" value="https://sonarqube.vinci-energies.net/" />
+		<!-- Define the SonarQube project properties -->
+		<property name="sonar.projectKey" value="mi3-gestion-des-commandes" />
+		<property name="sonar.projectName" value="mi3-gestion-des-commandes" />
+		<property name="sonar.projectVersion" value="master" />
+		<property name="sonar.sources" value="../src" />
+		<property name="sonar.projectBaseDir" value="../src"/>
+		<property name="sonar.java.source" value="8"/>
+		<property name="sonar.binaries" value="${war.classes}" />
+		<!--property name="sonar.java.binaries" value="TBM/WEB-INF/classes/com,TBM/WEB-INF/classes/application"/-->
+		<!--property name="sonar.java.libraries" value=".build/TBM/WEB-INF/lib/*.jar" /-->
+		<!-- Define SonarScanner for Ant Target -->
+		<target name="sonar">
+		    <taskdef uri="antlib:org.sonar.ant" resource="org/sonar/ant/antlib.xml">
+		    	<!-- Update the following line, or put the "sonarqube-ant-task-*.jar" file in your "$HOME/.ant/lib" folder -->
+		    	<!--classpath path="../web/WEB-INF/lib/sonarqube-ant-task-2.7.0.1612.jar" /-->
+			</taskdef>
+			<!-- Execute SonarScanner for Ant Analysis -->
+			<sonar:sonar />
+		</target>
+	
+	<target name="init">
+		<mkdir dir="${war.dir}"/>
+		<mkdir dir="${war.classes}"/>
+		<mkdir dir="${war.lib}"/>
+	</target>
+	
+	<target name="clean">
+		<delete dir="${war.dir}"/>
+		<delete file="${archive}" />
+	</target>
+
+	<!--
+		Generation du n° de la version
+	-->
+	<target name="setVersion" unless="version" >
+		<loadfile property="version" srcFile="${web.dir}/version.txt"/>
+	</target>
+	
+	<target name="version" depends="init, setVersion">
+		<tstamp>
+			<format property="dateVersion" pattern="dd/MM/yyyy HH:mm:ss"/>
+		</tstamp>
+		<echo message="${version} - ${dateVersion}" file="${version.file}" append="false" />
+	</target>
+
+	<!--
+		Copie des fichiers statiques (ressources, web...)
+	-->
+	<target name="copy-files" depends="copy-ressources, copy-web" />
+
+	<target name="copy-ressources" depends="init">
+
+		<copy todir="${war.classes}" overwrite="true">
+			<fileset dir="${src.dir}" >
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+
+		<copy todir="${war.classes}" overwrite="true">
+			<fileset dir="${ressources.tomcat}/lib">
+				<include name="*.jar" />
+			</fileset>						
+			<fileset dir="${src-generique.dir}" >
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+
+		<copy todir="${war.dir}/WEB-INF" overwrite="true">
+			<fileset dir="${ressources.dir}/web/WEB-INF" >
+				<include name="web.xml" />
+			</fileset>
+		</copy>
+		
+	</target>
+
+
+	<target name="copy-web" depends="init">
+		<copy todir="${war.dir}">
+			<fileset dir="${web.dir}">
+			    <exclude name="**/classes/**" />	
+			    <exclude name="**/tmp/**" />				
+			    <exclude name="**/work/**" />
+				<exclude name="META-INF/**" />
+				<exclude name="WEB-INF/web.xml" />	
+			</fileset>
+		</copy>
+		
+	</target>
+	
+	<!--
+		Compilation
+	-->
+	<target name="compile" depends="compile-src_gen, compile-src" />
+
+	<target name="compile-src_gen" depends="init">
+
+		<javac srcdir="${src-generique.dir}" destdir="${war.classes}" fork="true" executable="${java.home}/bin/javac" memoryInitialSize="64m" memoryMaximumSize="256m" debug="on" encoding="${java.encoding}">
+			<classpath>
+				<fileset dir="${ressources.tomcat}/lib">
+					<include name="*.jar" />
+				</fileset>					
+				<fileset dir="${tomcat.home}/lib">
+					<include name="*.jar" />
+				</fileset>
+				<fileset dir="${web.dir}/WEB-INF/lib">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+		</javac>
+
+	</target>
+
+	<target name="compile-src" depends="init">
+
+		<javac srcdir="${src.dir}" excludes="com/vinci/iep/test/**" destdir="${war.classes}" fork="true" executable="${java.home}/bin/javac" memoryInitialSize="64m" memoryMaximumSize="256m" debug="on" encoding="${java.encoding}">
+			<classpath>
+				<fileset dir="${ressources.tomcat}/lib">
+					<include name="*.jar" />
+				</fileset>								
+				<fileset dir="${tomcat.home}/lib">
+					<include name="*.jar" />
+				</fileset>
+				<fileset dir="${web.dir}/WEB-INF/lib">
+					<include name="*.jar" />
+				</fileset>
+				<fileset dir="${ressources.dir}/lib">
+					<include name="*.jar" />
+				</fileset>
+				<pathelement location="${war.classes}"/>
+			</classpath>
+		</javac>
+
+	</target>
+
+	<target name="build" depends="version, compile, copy-files" />
+	
+	<target name="war" depends="build">
+		<jar destfile="${archive}" basedir="${war.dir}"/>
+	</target>
+
+	<target name="all" depends="clean, war" />
+
+</project>

@@ -1,0 +1,42 @@
+<project name="copyFichiersSmile" default="copy" basedir="D:/temp/iep">
+
+	<target name="init">
+		<property name="build.dir" value="${basedir}/gestioncommande-20091105" />
+		<property name="iep.dir" value="${basedir}/20091105_0225__projet_iep" />
+		<property name="generique.dir" value="${basedir}/20090526_1210__projet_generique" />
+		<property name="src-generique.dir" value="${build.dir}/src-generique"/>
+		<property name="src.dir" value="${build.dir}/src"/>
+	</target>
+	
+	<target name="copy-src" depends="init">
+		<copy todir="${src.dir}">
+			<fileset dir="${iep.dir}/src/main/resources" />	
+		</copy>
+		<copy todir="${src.dir}">
+			<fileset dir="${iep.dir}/src/main/java" />	
+		</copy>
+	</target>
+
+	<target name="copy-src_gen" depends="init">
+		<copy todir="${src-generique.dir}">
+			<fileset dir="${generique.dir}/src/main/resources" />	
+		</copy>
+		<copy todir="${src-generique.dir}">
+			<fileset dir="${generique.dir}/src/main/java" />	
+		</copy>
+	</target>
+
+	<target name="copy-web" depends="init">
+		<copy todir="${build.dir}/web">
+			<fileset dir="${iep.dir}/web" />
+		</copy>
+	</target>
+
+	<target name="copy-extra" depends="init">
+		<copy todir="${build.dir}/extra">
+			<fileset dir="${iep.dir}/extra" />	
+		</copy>
+	</target>
+
+	<target name="copy" depends="copy-src, copy-src_gen, copy-web, copy-extra"/>
+</project>
