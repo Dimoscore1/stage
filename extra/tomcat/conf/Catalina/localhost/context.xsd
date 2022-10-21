@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:element name="Context">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Parameter" type="ParameterType" maxOccurs="unbounded" />
+				<xs:element name="Resource" type="ResourceType" maxOccurs="unbounded" />
+			</xs:sequence>
+			<xs:attribute name="docBase" type="xs:string" />
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="ParameterType">
+		<xs:attribute name="name" type="xs:string" />
+		<xs:attribute name="value" type="xs:string" />
+	</xs:complexType>
+	<xs:complexType name="ResourceType">
+		<xs:attribute name="name" type="xs:string" />
+		<xs:attribute name="auth" type="xs:string" />
+		<xs:attribute name="type" type="xs:string" />
+		<xs:attribute name="maxActive" type="xs:integer" />
+		<xs:attribute name="maxIdle" type="xs:integer" />
+		<xs:attribute name="maxWait" type="xs:integer" />
+		<xs:attribute name="username" type="xs:string" />
+		<xs:attribute name="password" type="xs:string" />
+		<xs:attribute name="driverClassName" type="xs:string" />
+		<xs:attribute name="url" type="xs:string" />
+		<xs:attribute name="factory" type="xs:string" />
+		<xs:attribute name="maxThreads" type="xs:string" />
+	</xs:complexType>
+</xs:schema>

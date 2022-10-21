@@ -1,0 +1,3 @@
+A charger en ligne de commande :
+#mysql --default-character-set=utf8 -u root -p < init_1_create.sql 
+#mysql --default-character-set=utf8 -u root -p < init_2_insert.sql 

@@ -1,0 +1,1 @@
+alter table commande add COLUMN nombrefacture int(1) default 1;
